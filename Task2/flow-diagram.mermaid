@@ -1,0 +1,45 @@
+stateDiagram-v2
+    [*] --> S0_LangDetect
+
+    S0_LangDetect: State 0 - Detect Language\n(Arabic script check on incoming text)
+    S0_LangDetect --> S1_Greeting
+
+    S1_Greeting: State 1 - Greeting + Intent\n"Book appointment or ask a question?"
+    S1_Greeting --> FAQ: Intent = Question
+    S1_Greeting --> S2_Service: Intent = Booking
+    S1_Greeting --> Handoff: Off-script / medical / complaint / pricing
+
+    FAQ: Answer from FAQ list
+    FAQ --> S1_Greeting: loop back to intent
+
+    S2_Service: State 2 - Which service?
+    S2_Service --> S3_Timing
+    S2_Service --> Handoff: Off-script
+
+    S3_Timing: State 3 - Preferred day/time
+    S3_Timing --> S4_Slots
+    S3_Timing --> Handoff: Off-script
+
+    S4_Slots: State 4 - Offer available slots\n(mocked calendar for Phase 1)
+    S4_Slots --> S5_Confirm: Slot chosen
+    S4_Slots --> S3_Timing: None work, ask again
+
+    S5_Confirm: State 5 - Confirm booking\n(service + date + time summary)
+    S5_Confirm --> [*]
+
+    Handoff: Human Handoff\nMedical/health, complaints,\npricing negotiation, off-script
+    Handoff --> [*]: escalated to human, bot stops
+
+    note right of S1_Greeting
+        Every state has EN + AR versions.
+        Bot detects language switch mid-chat
+        and replies in the new language.
+    end note
+
+    note right of S4_Slots
+        No-reply nudge timers run in parallel
+        from the last user message:
+        +1h  -> free-form nudge
+        +24h -> template message (Meta approval needed)
+        +72h -> final template, then mark as lost
+    end note

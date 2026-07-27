@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=mousy-sublet-bartender.ngrok-free.dev
+      - N8N_PROTOCOL=https
+      - N8N_PORT=5678
+      - WEBHOOK_URL=https://mousy-sublet-bartender.ngrok-free.dev/
+      - N8N_EDITOR_BASE_URL=https://mousy-sublet-bartender.ngrok-free.dev/
+      - GENERIC_TIMEZONE=Asia/Karachi
+      - N8N_SECURE_COOKIE=false
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - automation
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: unless-stopped
+    command:
+      - "http://n8n:5678"
+      - "--url=mousy-sublet-bartender.ngrok-free.dev"
+    environment:
+      - NGROK_AUTHTOKEN=3DyyY6XOkBVJA6rphtYrP7XZ6In_57CR5br7wYLESb8gJrAnm
+    depends_on:
+      - n8n
+    networks:
+      - automation
+    ports:
+      - "4040:4040" # ngrok inspector UI (http://localhost:4040)
+
+volumes:
+  n8n_data:
+
+networks:
+  automation:
+    driver: bridge

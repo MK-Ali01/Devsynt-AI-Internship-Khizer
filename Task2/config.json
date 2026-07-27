@@ -1,0 +1,28 @@
+{
+  "clinic_name": "Bright Smile Dental Clinic",
+  "services": [
+    "Check-up & Cleaning",
+    "Teeth Whitening",
+    "Braces Consultation",
+    "Emergency / Toothache"
+  ],
+  "calendar_id": "",
+  "handoff_contact": "",
+  "reminder_lead_time_hours": 24,
+  "languages": ["en", "ar"],
+  "nudge_schedule_hours": [1, 24, 72],
+  "faq": [
+    {
+      "q_en": "What are your opening hours?",
+      "q_ar": "ما هي ساعات العمل؟",
+      "a_en": "We're open Saturday–Thursday, 10 AM–8 PM.",
+      "a_ar": "نعمل من السبت إلى الخميس، من 10 صباحاً حتى 8 مساءً."
+    },
+    {
+      "q_en": "Do you accept insurance?",
+      "q_ar": "هل تقبلون التأمين الصحي؟",
+      "a_en": "Yes, we accept most major insurance providers. Our team can confirm your specific plan.",
+      "a_ar": "نعم، نقبل معظم شركات التأمين الرئيسية. يمكن لفريقنا تأكيد تغطية خطتك تحديداً."
+    }
+  ]
+}

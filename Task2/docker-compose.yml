@@ -8,11 +8,11 @@ services:
     ports:
       - "5678:5678"
     environment:
-      - N8N_HOST=mousy-sublet-bartender.ngrok-free.dev
+      - N8N_HOST=${NGROK_DOMAIN}
       - N8N_PROTOCOL=https
       - N8N_PORT=5678
-      - WEBHOOK_URL=https://mousy-sublet-bartender.ngrok-free.dev/
-      - N8N_EDITOR_BASE_URL=https://mousy-sublet-bartender.ngrok-free.dev/
+      - WEBHOOK_URL=https://${NGROK_DOMAIN}/
+      - N8N_EDITOR_BASE_URL=https://${NGROK_DOMAIN}/
       - GENERIC_TIMEZONE=Asia/Karachi
       - N8N_SECURE_COOKIE=false
     volumes:
@@ -25,16 +25,41 @@ services:
     container_name: ngrok
     restart: unless-stopped
     command:
-      - "http://n8n:5678"
-      - "--url=mousy-sublet-bartender.ngrok-free.dev"
+      - "http"
+      - "n8n:5678"
+      - "--url=${NGROK_DOMAIN}"
     environment:
-      - NGROK_AUTHTOKEN=3DyyY6XOkBVJA6rphtYrP7XZ6In_57CR5br7wYLESb8gJrAnm
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     depends_on:
       - n8n
     networks:
       - automation
     ports:
       - "4040:4040" # ngrok inspector UI (http://localhost:4040)
+
+  # Used only for the Meta/WhatsApp webhook, since ngrok's free-tier
+  # interstitial page (ERR_NGROK_6024) blocks Meta's verification request.
+  # Keep ngrok above for Task 1's browser-facing static domain requirement.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    # Quick tunnel mode: no Cloudflare account needed, but the URL changes
+    # every time this container restarts. Get it with:
+    #   docker compose logs cloudflared | grep trycloudflare
+    command: tunnel --url http://n8n:5678
+    #
+    # --- For a STABLE hostname instead (recommended once you have 5 min) ---
+    # 1. Free Cloudflare account -> Zero Trust -> Networks -> Tunnels -> Create a tunnel
+    # 2. Name it, copy the token it gives you, add to your .env as CLOUDFLARE_TUNNEL_TOKEN
+    # 3. Replace the "command" line above with:
+    #      command: tunnel run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    # 4. In the same dashboard, add a Public Hostname pointing to http://n8n:5678
+    #    That gives you a permanent URL like whatsapp-webhook.yourdomain.com
+    depends_on:
+      - n8n
+    networks:
+      - automation
 
 volumes:
   n8n_data:

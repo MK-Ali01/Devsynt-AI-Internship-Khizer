@@ -1,0 +1,82 @@
+{
+  "name": "Whatsapp Automate",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "6182532b-a70c-4a8b-8c91-347eb9177d8f",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Respond to Webhook",
+                "value": "00000000000"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -176,
+        -112
+      ],
+      "id": "01d15553-213b-4665-b4d5-d36b94d412f5",
+      "name": "Webhook",
+      "webhookId": "6182532b-a70c-4a8b-8c91-347eb9177d8f",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "executeOnce": false,
+      "notesInFlow": false,
+      "notes": "Task2 Test Successful"
+    },
+    {
+      "parameters": {
+        "enableResponseOutput": true,
+        "respondWith": "text",
+        "responseBody": "={{ $json.query[\"hub.challenge\"] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        64,
+        -224
+      ],
+      "id": "9ecffa22-9726-4262-83eb-4ffe1c150084",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d3083103-bedd-44d8-a008-c1726a5aa702",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "16ad8e6d3dac235c951169d34cce7ded120211f2d63b4db3cf48ed90e1221dd6"
+  },
+  "nodeGroups": [],
+  "id": "gpHzkcpDnHf2NpkM",
+  "tags": []
+}

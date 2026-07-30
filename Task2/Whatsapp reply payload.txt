@@ -1,0 +1,53 @@
+▼
+{"object":"whatsapp_business_account","entry":[{"id":"1343137887887578","changes...
+Full payload:
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1343137887887578",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556565608",
+              "phone_number_id": "1243871422141952"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "M Khizer Ali"
+                },
+                "wa_id": "923261979791",
+                "user_id": "PK.1820545125599378",
+                "country_code": "PK"
+              }
+            ],
+            "messages": [
+              {
+                "from": "923261979791",
+                "from_user_id": "PK.1820545125599378",
+                "id": "wamid.HBgMOTIzMjYxOTc5NzkxFQIAEhggQTU2NTRBMUM3RTdEREI5NTRGNkU4MDJGMDNCOUZGM0YA",
+                "timestamp": "1785409762",
+                "text": {
+                  "body": "Hello this is task 2 complete affirmative"
+                },
+                "from_logical_id": "227173805854840",
+                "type": "text",
+                "internal_1p_only_data": {
+                  "account_context": {
+                    "waac_id": "2442099959628079",
+                    "cs_id": "1243871422141952",
+                    "account_context_type": "non_paid_messaging"
+                  }
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}

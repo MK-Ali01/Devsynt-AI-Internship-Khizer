@@ -1,0 +1,480 @@
+{
+  "name": "SlotWise",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Booking Workflow \n",
+        "height": 96,
+        "width": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -704,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "26ba154d-62aa-4680-9eaf-01c24bb4bb9b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "672035ad-d5c8-4a19-af52-cd1bafb13e15",
+              "leftValue": "={{$json.author.bot}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -304,
+        48
+      ],
+      "id": "13963e6f-00c3-42b5-a975-d2d6a229b493",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "I'll take 7:30",
+        "options": {
+          "systemMessage": "You are SlotWise, a friendly booking assistant for a restaurant/salon on Discord.\n\nFollow this flow, one step at a time, in short, natural conversational messages\n(like texting, not a form):\n\n1. GREET\n   Greet the user warmly. Ask if they'd like to book a table (restaurant) or\n   an appointment (parlour/salon), or if they have a question first.\n\n2. ASK SERVICE\n   Ask what specifically they want:\n   - Restaurant: table size and occasion (e.g. \"table for 2, birthday dinner\")\n   - Parlour: haircut / facial / manicure (or similar)\n\n3. ASK TIMING\n   Ask what day and time they'd prefer.\n\n4. OFFER SLOTS\n   Offer 2-3 mock available time options near their preferred time\n   (invent plausible nearby times, e.g. \"2:30 PM, 3:00 PM, or 4:15 PM\").\n   Wait for them to pick one.\n\n5. CONFIRM AND LOG\n   Once they pick a slot, you MUST call the log_booking tool with:\n     - username: the user's name\n     - service: what they booked\n     - date: the confirmed date\n     - time: the confirmed slot\n   Only after the tool call succeeds, reply with a friendly confirmation\n   summarizing the booking, e.g.:\n   \"✅ You're all set! Table for 2 booked for Friday at 7:00 PM. See you then!\"\n\n6. HANDOFF (can happen at any point)\n   If the user asks something off-script — pricing negotiation, a complaint,\n   or anything outside this booking flow — do NOT try to answer it yourself.\n   Instead:\n     - Call the log_handoff tool with: username and their exact message\n     - Reply with: \"Let me connect you with our team on that one! They'll\n       follow up with you shortly.\"\n   Then, if they return to booking afterward, resume the flow normally.\n\nRules:\n- Never skip steps or ask for information you already have.\n- Keep every reply short and warm — 1-3 sentences max.\n- Never invent a booking confirmation without actually calling log_booking first."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -64,
+        112
+      ],
+      "id": "2b474c54-95e7-4111-b5f1-3f60093c83f6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -256,
+        320
+      ],
+      "id": "5f7af573-d74e-4539-bab9-c2963b4da2f2",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "iwEiDKZ8hvUfHvwq",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "{{$json.author.id}}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -80,
+        336
+      ],
+      "id": "24dc30e6-e4c7-4450-b79c-e96405dd3e5f",
+      "name": "Simple Memory",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "1505245599170301982",
+          "mode": "list",
+          "cachedResultName": "MKA Cuzi 's server",
+          "cachedResultUrl": "https://discord.com/channels/1505245599170301982"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1505245600919060672",
+          "mode": "list",
+          "cachedResultName": "general",
+          "cachedResultUrl": "https://discord.com/channels/1505245599170301982/1505245600919060672"
+        },
+        "content": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        272,
+        112
+      ],
+      "id": "2ddd5c44-5812-4ddd-832f-c0063da9cda2",
+      "name": "Send a message",
+      "webhookId": "8935a3ed-e467-4ef2-a2e4-4a757865a384",
+      "credentials": {
+        "discordBotApi": {
+          "id": "sf5WxtGEBdi9NNoY",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "get",
+        "guildId": {
+          "__rl": true,
+          "value": "1505245599170301982",
+          "mode": "list",
+          "cachedResultName": "MKA Cuzi 's server",
+          "cachedResultUrl": "https://discord.com/channels/1505245599170301982"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "=1505245600919060672",
+          "mode": "id"
+        },
+        "messageId": "1535576765915725906",
+        "options": {
+          "simplify": true
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        48
+      ],
+      "id": "94092d02-4f74-4147-8952-049badd51759",
+      "name": "Get a message",
+      "webhookId": "d0e7887b-be90-4449-a6d9-f84bb47687b8",
+      "alwaysOutputData": true,
+      "credentials": {
+        "discordBotApi": {
+          "id": "sf5WxtGEBdi9NNoY",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Call this once the user has confirmed a booking, with username, service, date, time.",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-b7Xw7Bj3eWW8Q6Dw7j7Jn-HBeiQtpNjZ68gmzK_xYM",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1095305401,
+          "mode": "list",
+          "cachedResultName": "Bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-b7Xw7Bj3eWW8Q6Dw7j7Jn-HBeiQtpNjZ68gmzK_xYM/edit#gid=1095305401"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Username": "Mkhizerali000",
+            "Service": "birthday party",
+            "Time": "7:00 pm",
+            "Status": "Reserved",
+            "Date": "8-8-26"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        416
+      ],
+      "id": "bd3b80ac-086b-41f2-a446-99f3d23aeda6",
+      "name": "log_booking",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BJ4Tp9P9pVqSAyIf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Call this when the user asks something off-script that needs a human.",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-b7Xw7Bj3eWW8Q6Dw7j7Jn-HBeiQtpNjZ68gmzK_xYM",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 456515375,
+          "mode": "list",
+          "cachedResultName": "Handoffs:",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-b7Xw7Bj3eWW8Q6Dw7j7Jn-HBeiQtpNjZ68gmzK_xYM/edit#gid=456515375"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "username",
+              "displayName": "username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        320
+      ],
+      "id": "15c2fdf8-1ba8-4bcd-961e-91209f279870",
+      "name": "log_handoff",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BJ4Tp9P9pVqSAyIf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        96
+      ],
+      "id": "152806eb-b91d-4b1b-944c-b110cc615192",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {
+    "AI Agent": [
+      {
+        "json": {
+          "output": "✅ You're all set! Table for 2 (birthday dinner) booked for tonight at 7:30 PM. See you then!"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log_booking": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log_handoff": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3fbab108-b72e-4ac2-9ff1-9fb64815eeca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "16ad8e6d3dac235c951169d34cce7ded120211f2d63b4db3cf48ed90e1221dd6"
+  },
+  "nodeGroups": [],
+  "id": "S2we4iEzBOY3sJje",
+  "tags": []
+}

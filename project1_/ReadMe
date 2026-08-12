@@ -1,0 +1,30 @@
+#Project-1 SlotWise — AI Booking Concierge Bot
+
+**Date Submitted:** 08 August 2026
+
+## Tech Stack
+- n8n (workflow automation)
+- Discord Bot API
+- Google Gemini API (intent/entity extraction)
+- Google Sheets (booking + session storage)
+
+## Tools
+- Discord Developer Portal (bot application + token)
+- Google AI Studio (Gemini API key)
+- Google Sheets (Sessions / Bookings / Handoffs tabs)
+
+## Nodes Used
+1. Discord Trigger
+2. Google Sheets — Lookup Rows (get session)
+3. IF (session exists?)
+4. Set + Google Sheets Append (init new session)
+6. HTTP Request (Gemini — intent & entity extraction)
+7. Code (parse LLM JSON response)
+8. Set (build reply text per state)
+10. Google Sheets — Append Row (log booking)
+11. Google Sheets — Append Row (log handoff)
+12. Discord — Send Message
+
+## Files
+- `workflow.json` — exported n8n workflow
+- `workflow-screenshot.png` — visual canvas of connected nodes

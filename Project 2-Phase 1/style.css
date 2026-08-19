@@ -1,0 +1,472 @@
+/* ===================================================================
+   LangChain / LangGraph learning map — stylesheet
+   Design: a literal graph runs down the page — each section is a
+   numbered "node" connected by a rail, echoing the LangGraph concepts
+   the page explains.
+   =================================================================== */
+
+:root{
+  --bg:        #F3F5EF;
+  --bg-soft:   #EAEEE4;
+  --card:      #FFFFFF;
+  --ink:       #14181A;
+  --ink-soft:  #4B5259;
+  --ink-faint: #838C86;
+  --line:      #D9DED2;
+
+  --indigo:    #34479E;
+  --indigo-dk: #232F6C;
+  --teal:      #1F8A70;
+  --teal-soft: #E4F1EC;
+  --gold:      #B4832C;
+  --gold-soft: #F5EAD4;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --radius: 12px;
+  --maxw: 860px;
+}
+
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+a{ color: var(--indigo); }
+
+/* faint dot-grid backdrop, evokes graph paper without being loud */
+.graphbg{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(circle, #C7CFBE 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.55;
+}
+
+/* ---------------- Hero ---------------- */
+
+.hero{
+  padding: 88px 24px 56px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+}
+
+.hero-inner{
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+.eyebrow{
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  margin: 0 0 18px;
+}
+
+.hero h1{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+  max-width: 14ch;
+}
+
+.hero-sub{
+  font-size: 18px;
+  color: var(--ink-soft);
+  max-width: 56ch;
+  margin: 0 0 44px;
+}
+
+/* node-nav: hero diagram doubles as a table of contents */
+.node-nav{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding-top: 6px;
+}
+
+.node-nav-line{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  overflow: visible;
+  pointer-events: none;
+}
+.node-nav-line line{
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.node-stop{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  flex: 1;
+  transition: color 0.15s ease;
+}
+.node-stop .dot{
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.node-stop:hover{ color: var(--indigo-dk); }
+.node-stop:hover .dot{
+  border-color: var(--indigo);
+  color: var(--indigo);
+  background: #fff;
+  transform: translateY(-2px);
+}
+.node-stop:focus-visible .dot{
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px){
+  .node-nav{ flex-wrap: wrap; row-gap: 20px; }
+  .node-nav-line{ display: none; }
+  .node-stop{ flex: 1 1 30%; }
+}
+
+/* ---------------- Main / rail ---------------- */
+
+main{
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 24px 20px;
+}
+
+.rail{
+  position: absolute;
+  left: 24px;
+  top: 8px;
+  bottom: 60px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--line) 0px, var(--line) 6px, transparent 6px, transparent 12px
+  );
+}
+@media (max-width: 640px){ .rail{ display: none; } }
+
+.node{
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 28px;
+  padding: 56px 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 24px;
+}
+.node:last-child{ border-bottom: none; }
+
+.node-marker{
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.node-marker span{
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--teal);
+  color: var(--teal);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+@media (max-width: 640px){
+  .node{ grid-template-columns: 1fr; }
+  .node-marker{ justify-content: flex-start; margin-bottom: -12px; }
+}
+
+.kicker{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+}
+
+.node-body h2{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.2;
+  margin: 0 0 18px;
+  max-width: 22ch;
+}
+
+.node-body p{
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+  max-width: 66ch;
+}
+.node-body p strong{ color: var(--ink); font-weight: 600; }
+.node-body p em{ color: var(--ink); font-style: normal; font-weight: 500; }
+
+/* ---------------- diagram cards (svg) ---------------- */
+
+.diagram-card{
+  margin-top: 28px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 22px 8px;
+}
+
+.diagram-label{
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  margin: 0 0 6px;
+}
+
+.diagram{ width: 100%; height: auto; display: block; }
+
+.step rect{
+  fill: var(--card);
+  stroke: var(--indigo);
+  stroke-width: 1.6;
+}
+.step-accent rect{
+  fill: var(--teal-soft);
+  stroke: var(--teal);
+}
+.step-orch rect{
+  fill: var(--gold-soft);
+  stroke: var(--gold);
+}
+.step-title{
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+.step-title-sm{
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+.step-sub{
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  fill: var(--ink-faint);
+}
+.edge{ stroke: var(--ink-faint); stroke-width: 1.6; }
+.edge.cond{ stroke: var(--teal); }
+.arrowhead{ fill: var(--ink-faint); }
+.edge-label{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: var(--teal);
+}
+.cond-node{
+  fill: var(--gold-soft);
+  stroke: var(--gold);
+  stroke-width: 1.6;
+}
+.cond-label{
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  fill: var(--ink-soft);
+  text-anchor: middle;
+}
+.pt-node{
+  fill: var(--card);
+  stroke: var(--ink-faint);
+  stroke-width: 1.6;
+  stroke-dasharray: 3 3;
+}
+.pt-label{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  fill: var(--ink-soft);
+}
+
+/* ---------------- code card ---------------- */
+
+.code-card{
+  margin-top: 28px;
+  background: var(--indigo-dk);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 24px -12px rgba(35, 47, 108, 0.45);
+}
+.code-card-head{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: rgba(255,255,255,0.06);
+}
+.code-dots{ display: flex; gap: 6px; }
+.code-dots i{
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  display: inline-block;
+}
+.code-filename{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin-left: 4px;
+}
+.code-card pre{
+  margin: 0;
+  padding: 20px 22px 24px;
+  overflow-x: auto;
+}
+.code-card code{
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #E7ECF7;
+}
+.c-kw{ color: #8FB4FF; }
+.c-str{ color: #A9E0C4; }
+.c-cm{ color: #8891A8; font-style: italic; }
+
+/* ---------------- pair cards (memory / tools) ---------------- */
+
+.pair{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 26px;
+}
+@media (max-width: 640px){ .pair{ grid-template-columns: 1fr; } }
+
+.pair-card{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+.pair-tag{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 10px;
+}
+.pair-card p:last-child{ margin: 0; color: var(--ink-soft); font-size: 15.5px; }
+
+/* ---------------- table ---------------- */
+
+.table-card{
+  margin-top: 28px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+table{ width: 100%; border-collapse: collapse; }
+th, td{
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 14.5px;
+  border-bottom: 1px solid var(--line);
+}
+thead th{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  background: var(--bg-soft);
+}
+thead th:nth-child(2){ color: var(--indigo); }
+thead th:nth-child(3){ color: var(--teal); }
+tbody td:first-child{ color: var(--ink-faint); font-family: var(--font-mono); font-size: 12.5px; }
+tbody tr:last-child td{ border-bottom: none; }
+
+/* ---------------- term grid ---------------- */
+
+.term-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 26px;
+}
+@media (max-width: 640px){ .term-grid{ grid-template-columns: 1fr; } }
+
+.term-card{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 18px 20px;
+}
+.term-name{
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+.term-card p:last-child{ margin: 0; color: var(--ink-soft); font-size: 14.5px; }
+
+/* ---------------- footer ---------------- */
+
+.site-footer{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+.site-footer p{
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  margin: 0;
+}
